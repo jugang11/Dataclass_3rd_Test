@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import altair as alt
 from collections import Counter
 import seaborn as sns
-from konlpy.tag import Okt
 
 st.set_page_config(
     page_title="K팝 데몬 헌터스 팬덤 형성 요인 분석",
@@ -41,17 +40,17 @@ text = " ".join(df["title"].tolist()) + " " + " ".join(df["description"].tolist(
 # HTML 태그 제거
 text = re.sub(r"<.*?>", "", text)
 
-# 형태소 분석 (명사 추출) - 캐싱
+# 한글 단어 추출 (2글자 이상)
 @st.cache_data
-def extract_all_nouns(text):
-    okt = Okt()
-    return okt.nouns(text)
+def extract_korean_words(text):
+    words = re.findall(r"[가-힣]{2,}", text)
+    return words
 
-all_nouns = extract_all_nouns(text)
+all_nouns = extract_korean_words(text)
 
 # 불용어 설정
 stopwords = set(STOPWORDS)
-stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도", "것", "등", "수", "위"])
+stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도", "것", "등", "수", "위", "이번", "지난", "올해", "통해", "대한", "에서", "으로", "하는", "있는", "되는", "라며", "에서는"])
 
 # 사이드바 옵션
 st.sidebar.header("옵션")
@@ -107,23 +106,15 @@ st.altair_chart(chart, use_container_width=True)
 # ========== 3. Top 키워드 (Seaborn) ==========
 st.header("3. Top 키워드")
 
-# 디버그용
-st.write(f"all_nouns 개수: {len(all_nouns)}")
-
 # 불용어 제거 후 카운트
-filtered_nouns = [n for n in all_nouns if n not in stopwords and len(n) > 1]
-st.write(f"filtered_nouns 개수: {len(filtered_nouns)}")
-
+filtered_nouns = [n for n in all_nouns if n not in stopwords]
 noun_counts = Counter(filtered_nouns).most_common(top_n)
-st.write(f"noun_counts: {noun_counts}")
 
 # 데이터프레임 변환
 df_top = pd.DataFrame(noun_counts, columns=["키워드", "빈도"])
-st.dataframe(df_top)
 
 # Seaborn 바차트
 fig2, ax2 = plt.subplots(figsize=(10, 6))
 sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax2)
 ax2.set_title(f"Top {top_n} 키워드")
 st.pyplot(fig2)
-
