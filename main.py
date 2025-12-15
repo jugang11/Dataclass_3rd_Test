@@ -16,3 +16,5 @@ st.set_page_config(            # 페이지 설정
 )
 
 st.title("K팝 데몬 헌터스 팬덤 형성 요인 분석")
+st.subheader("2025년 가장 이슈가 된 Netflix의 'K팝 데몬 헌터스'에 대한 온라인 데이터를 분석 : st.subheader()")
+st.text("팬덤 형성의 핵심 요인을 다각도로 분석하고 인사이트를 제공하고자 함 : st.text()")
