@@ -93,18 +93,21 @@ df_filtered = df[(df["date"] >= start_date) & (df["date"] <= end_date)]
 daily_counts = df_filtered.groupby("date").size().reset_index(name="count")
 daily_counts["date"] = pd.to_datetime(daily_counts["date"])
 
-chart = alt.Chart(daily_counts).mark_line(point=True).encode(
-    x=alt.X("date:T", title="날짜"),
-    y=alt.Y("count:Q", title="기사 수"),
-    tooltip=["date:T", "count:Q"]
-).properties(
-    height=400
-).interactive()
+# 데이터가 있을 때만 차트 생성
+if len(daily_counts) > 0:
+    chart = alt.Chart(daily_counts).mark_line(point=True).encode(
+        x=alt.X("date:T", title="날짜"),
+        y=alt.Y("count:Q", title="기사 수"),
+        tooltip=["date:T", "count:Q"]
+    ).properties(
+        height=400
+    ).interactive()
 
-st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, use_container_width=True)
+else:
+    st.write("해당 기간에 데이터가 없습니다.")
 
-st.write("2번 끝!")  # 이거 추가
-
+st.write("2번 끝!")
 # ========== 3. Top 키워드 (Seaborn) ==========
 st.header("3. Top 키워드")
 st.write("3번 섹션 시작")
@@ -128,4 +131,5 @@ sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax2)
 ax2.set_title(f"Top {top_n} 키워드")
 st.pyplot(fig2)
 st.write("3번 섹션 끝")
+
 
