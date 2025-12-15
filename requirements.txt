@@ -6,3 +6,5 @@ altair
 plotly
 wordcloud
 networkx
+konlpy
+JPype1
