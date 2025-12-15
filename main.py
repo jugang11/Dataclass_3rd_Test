@@ -103,6 +103,8 @@ chart = alt.Chart(daily_counts).mark_line(point=True).encode(
 
 st.altair_chart(chart, use_container_width=True)
 
+st.write("2번 끝!")  # 이거 추가
+
 # ========== 3. Top 키워드 (Seaborn) ==========
 st.header("3. Top 키워드")
 st.write("3번 섹션 시작")
@@ -126,3 +128,4 @@ sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax2)
 ax2.set_title(f"Top {top_n} 키워드")
 st.pyplot(fig2)
 st.write("3번 섹션 끝")
+
