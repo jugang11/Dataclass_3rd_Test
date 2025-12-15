@@ -21,38 +21,45 @@ st.set_page_config(            # 페이지 설정
 
 st.title("K팝 데몬 헌터스 팬덤 형성 요인 분석")
 
-# 수집한 데이터 불러오기
-df = pd.read_csv('data/naver_news.csv', encoding='utf-8-sig')
+# 1) CSV 로드
+@st.cache_data
+def load_data():
+    return pd.read_csv("data/naver_news.csv", encoding="utf-8-sig")
 
-# title과 description을 하나의 문자열로 합치기
-df['title'] = df['title'].astype(str)
-df['description'] = df['description'].astype(str)
-text = ' '.join(df['title'].tolist()) + ' ' + ' '.join(df['description'].tolist())
+df = load_data()
+
+# 2) 분석 텍스트 생성 (title + description)
+df["title"] = df["title"].astype(str)
+df["description"] = df["description"].astype(str)
+
+text = " ".join(df["title"].tolist()) + " " + " ".join(df["description"].tolist())
 
 # HTML 태그 제거
-text = re.sub(r'<.*?>', '', text)
+remove_tags = re.compile(r"<.*?>")
+text = re.sub(remove_tags, "", text)
 
-# 폰트명을 알고 있을 때 한글 폰트 경로 찾기
-font_path = font_manager.findfont('Malgun Gothic')
+# 3) WordCloud 옵션
+st.sidebar.header("옵션")
+max_words = st.sidebar.slider("단어 개수", 10, 200, 50, 10)
 
-# 불용어 목록에 단어 여러 개 추가
-stop_words = set(STOPWORDS)
-stop_words.update(['뉴스', '기자', '단독', '사진', '영상', '보도'])
+# 불용어(Stopwords)
+stopwords = set(STOPWORDS)
+stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도"])
 
-# 한글 폰트 경로를 지정한 워드클라우드 객체 생성
+# 폰트: 맑은고딕
+font_path = "data/malgun.ttf"
+
 wc = WordCloud(
-    font_path=font_path,  # 한글 폰트 경로
-    max_words=50,  # 최대 표시 단어 수
+    font_path=font_path,
+    background_color="white",
     width=1000,
     height=500,
-    stopwords=stop_words,  # 불용어 설정
-    background_color='white',  # 배경색
-    colormap='viridis'  # 컬러맵
+    max_words=max_words,
+    stopwords=stopwords
 ).generate(text)
 
-# 워드클라우드 시각화
+# 4) 출력
 fig, ax = plt.subplots(figsize=(12, 6))
-ax.imshow(wc, interpolation='bilinear')
-ax.axis('off')
+ax.imshow(wc, interpolation="bilinear")
+ax.axis("off")
 st.pyplot(fig)
-
