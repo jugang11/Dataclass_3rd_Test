@@ -1,6 +1,8 @@
 streamlit
 pandas
-numpy
 matplotlib
+seaborn
 altair
 plotly
+wordcloud
+networkx
