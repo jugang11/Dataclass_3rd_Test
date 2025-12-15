@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import altair as alt
 from collections import Counter
 import seaborn as sns
+from konlpy.tag import Okt
 
 st.set_page_config(
     page_title="K팝 데몬 헌터스 팬덤 형성 요인 분석",
@@ -48,16 +49,17 @@ def extract_all_nouns(text):
 
 all_nouns = extract_all_nouns(text)
 
-#사이드바 옵션
+# 불용어 설정
+stopwords = set(STOPWORDS)
+stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도", "것", "등", "수", "위"])
+
+# 사이드바 옵션
 st.sidebar.header("옵션")
 max_words = st.sidebar.slider("워드클라우드 단어 개수", 10, 200, 50, 10)
 top_n = st.sidebar.slider("Top 키워드 개수", 5, 30, 15, 5)
 
-# 워드클라우드
+# ========== 1. 워드클라우드 ==========
 st.header("1. 워드클라우드")
-
-stopwords = set(STOPWORDS)
-stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도"])
 
 font_path = "data/malgun.ttf"
 
@@ -70,12 +72,12 @@ wc = WordCloud(
     stopwords=stopwords
 ).generate(" ".join(all_nouns))
 
-fig, ax = plt.subplots(figsize=(12, 6))
-ax.imshow(wc, interpolation="bilinear")
-ax.axis("off")
-st.pyplot(fig)
+fig1, ax1 = plt.subplots(figsize=(12, 6))
+ax1.imshow(wc, interpolation="bilinear")
+ax1.axis("off")
+st.pyplot(fig1)
 
-# 시계열 분석 (Altair)
+# ========== 2. 시계열 분석 (Altair) ==========
 st.header("2. 일별 기사량 추이")
 
 min_date = df["date"].min()
@@ -102,7 +104,7 @@ chart = alt.Chart(daily_counts).mark_line(point=True).encode(
 
 st.altair_chart(chart, use_container_width=True)
 
-# Top 키워드 (Seaborn)
+# ========== 3. Top 키워드 (Seaborn) ==========
 st.header("3. Top 키워드")
 
 # 불용어 제거 후 카운트
@@ -117,4 +119,3 @@ fig2, ax2 = plt.subplots(figsize=(10, 6))
 sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax2)
 ax2.set_title(f"Top {top_n} 키워드")
 st.pyplot(fig2)
-
