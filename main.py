@@ -28,27 +28,26 @@ def load_data():
 
 df = load_data()
 
-# 2) 텍스트 만들기 (title + description)
+# 2) 분석 텍스트 생성 (title + description)
 df["title"] = df["title"].astype(str)
 df["description"] = df["description"].astype(str)
 
 text = " ".join(df["title"].tolist()) + " " + " ".join(df["description"].tolist())
 
-# HTML 태그 제거 (뉴스 title/description에 <b> 같은 태그가 있음)
+# HTML 태그 제거
 remove_tags = re.compile(r"<.*?>")
 text = re.sub(remove_tags, "", text)
 
-# 3) WordCloud 옵션 (필요한 것만)
+# 3) WordCloud 옵션
 st.sidebar.header("옵션")
 max_words = st.sidebar.slider("단어 개수", 10, 200, 50, 10)
 
-# 불용어(Stopwords) 최소한만 추가
+# 불용어(Stopwords)
 stopwords = set(STOPWORDS)
 stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도"])
 
-# 폰트(한글이면 필수)
-# Windows 기본 폰트: 맑은고딕
-font_path = r"C:\Windows\Fonts\malgun.ttf"
+# 폰트: 맑은고딕
+font_path = "data/malgun.ttf"
 
 wc = WordCloud(
     font_path=font_path,
