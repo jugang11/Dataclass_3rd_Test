@@ -12,4 +12,7 @@ st.set_page_config(            # 페이지 설정
         'Report a bug': "https://streamlit.io",
         'About': "### 주은강 \n - [Contact](https://www.instagram.com/zoollllk/)"
     }
+
 )
+
+st.title("K팝 데몬 헌터스 팬덤 형성 요인 분석")
