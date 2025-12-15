@@ -105,16 +105,24 @@ st.altair_chart(chart, use_container_width=True)
 
 # ========== 3. Top 키워드 (Seaborn) ==========
 st.header("3. Top 키워드")
+st.write("3번 섹션 시작")
 
 # 불용어 제거 후 카운트
 filtered_nouns = [n for n in all_nouns if n not in stopwords]
+st.write(f"filtered_nouns 개수: {len(filtered_nouns)}")
+
 noun_counts = Counter(filtered_nouns).most_common(top_n)
+st.write(f"noun_counts: {noun_counts[:5]}")
 
 # 데이터프레임 변환
 df_top = pd.DataFrame(noun_counts, columns=["키워드", "빈도"])
+st.write("df_top 생성 완료")
+st.dataframe(df_top)
 
 # Seaborn 바차트
+st.write("차트 그리기 시작")
 fig2, ax2 = plt.subplots(figsize=(10, 6))
 sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax2)
 ax2.set_title(f"Top {top_n} 키워드")
 st.pyplot(fig2)
+st.write("3번 섹션 끝")
