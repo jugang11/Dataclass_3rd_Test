@@ -113,7 +113,8 @@ noun_counts = Counter(filtered_nouns).most_common(top_n)
 df_top = pd.DataFrame(noun_counts, columns=["키워드", "빈도"])
 
 # Seaborn 바차트
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax)
-ax.set_title(f"Top {top_n} 키워드")
-st.pyplot(fig)
+fig2, ax2 = plt.subplots(figsize=(10, 6))
+sns.barplot(data=df_top, x="빈도", y="키워드", palette="Blues_d", ax=ax2)
+ax2.set_title(f"Top {top_n} 키워드")
+st.pyplot(fig2)
+
