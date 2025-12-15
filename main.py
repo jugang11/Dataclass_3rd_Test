@@ -3,7 +3,6 @@ import pandas as pd
 import re
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
-from konlpy.tag import Okt
 import altair as alt
 from collections import Counter
 
@@ -48,16 +47,16 @@ def extract_all_nouns(text):
 
 all_nouns = extract_all_nouns(text)
 
-# ========== 사이드바 옵션 ==========
+#사이드바 옵션
 st.sidebar.header("옵션")
 max_words = st.sidebar.slider("워드클라우드 단어 개수", 10, 200, 50, 10)
 top_n = st.sidebar.slider("Top 키워드 개수", 5, 30, 15, 5)
 
-# ========== 1. 워드클라우드 ==========
+# 워드클라우드
 st.header("1. 워드클라우드")
 
 stopwords = set(STOPWORDS)
-stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도", "것", "등", "수", "위"])
+stopwords.update(["뉴스", "기자", "단독", "사진", "영상", "보도"])
 
 font_path = "data/malgun.ttf"
 
@@ -75,7 +74,7 @@ ax.imshow(wc, interpolation="bilinear")
 ax.axis("off")
 st.pyplot(fig)
 
-# ========== 2. 시계열 분석 (Altair) ==========
+# 시계열 분석 (Altair)
 st.header("2. 일별 기사량 추이")
 
 min_date = df["date"].min()
